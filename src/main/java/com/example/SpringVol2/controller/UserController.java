@@ -1,7 +1,9 @@
 package com.example.SpringVol2.controller;
 
-import com.example.SpringVol2.Service.UserService;
+import com.example.SpringVol2.Service.UserServiceImpl;
 import com.example.SpringVol2.domain.User;
+import com.example.SpringVol2.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,34 +11,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    @Autowired
+    private final UserMapper userMapper;
+
+    public UserController(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @GetMapping
-    public List<User> findUser() {
-        return userService.findUsers();
+    public List<User> findUsers() {
+        return userMapper.findUsers();
     }
 
     @GetMapping("/{email}")
     public User findUserByEmail(@PathVariable String email) {
-        return userService.findUserByEmail(email);
+        return userMapper.findUserByEmail(email);
     }
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+        userMapper.createUser(user);
+        return user;
     }
 
     @PutMapping("/{email}")
     public User updateUser(@PathVariable String email, @RequestBody User user) {
-        return userService.updateUser(email, user);
+        userMapper.updateUser(user);
+        return user;
     }
 
     @DeleteMapping("/{email}")
-    public int deleteUser(@RequestBody User user) {
-        return userService.deleteUser(user);
+    public int deleteUser(@PathVariable String email) {
+        return userMapper.deleteUser(email);
     }
 }
